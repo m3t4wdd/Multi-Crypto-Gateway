@@ -1,0 +1,132 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #1a1d2e;
+  color: #e8eaed;
+}
+
+.container {
+  text-align: center;
+  margin: 1.5% 15% 0 15%;
+  background-color: #2a2f45;
+  padding: 20px 0 0 0;
+  border-radius: 15px;
+  border: 1px solid #3a4166;
+}
+
+h1 {
+  font-size: 40px;
+  color: #6c8ae4;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+h2 {
+  color: #9d7ad2;
+  margin: 20px 0 15px 0;
+}
+
+ul.coin_list {
+  padding: 0 20px 0 20px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+ul.coin_list  li {
+  margin: 8px;
+  border: none;
+  background-color: #3a4166;
+  border-radius: 8px;
+  list-style-type: none;
+  flex: 1 1 140px;
+  transition: all 0.2s ease;
+  max-width: 140px;
+}
+
+ul.coin_list li:hover {
+  cursor: pointer;
+  background-color: #4a5280;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+label {
+  display: block;
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: white;
+}
+
+input[type="radio"]:checked + label {
+  background-color: #6c8ae4;
+  color: white;
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px 25px;
+  border-radius: 8px;
+  color: white;
+  border: none;
+  background-color: #6c8ae4;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background-color: #5a7ad4;
+}
+
+a {
+  text-decoration: none;
+  color: #6c8ae4;
+}
+
+#p_address {
+  overflow-wrap: break-word;
+  user-select: text;
+  margin: 0 3% 3% 3%;
+  padding: 10px;
+  background-color: #2a2f45;
+  border-radius: 6px;
+  border: 1px solid #3a4166;
+  font-family: 'Courier New', monospace;
+  color: #9d7ad2;
+}
+
+.container img {
+  max-width: 50vw;
+  max-height: 50vh;
+  height: auto;
+  border-radius: 8px;
+}
+
+#timer {
+  font-size: 1em;
+  color: red;
+  margin: 10px;
+}
+.warnings{
+  padding: 0 10px 0 10px;
+  background-color: #9d7ad2;
+  text-align: start;
+  border-radius: 10px;
+  max-width: 100%;
+}
+
+.warnings ul{
+  margin: 0;
+  padding: 20px 0 20px 10px;
+}
+.warnings ul li{
+  margin-bottom: 5px;
+  font-weight: bold;
+}

@@ -1,0 +1,9 @@
+Flask
+flask-cors
+Flask-SQLAlchemy
+qrcode
+bip-utils
+Pillow
+requests
+cryptography
+pexpect

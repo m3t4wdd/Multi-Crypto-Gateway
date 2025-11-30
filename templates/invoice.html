@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice #{{invoice.invoice_id}}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <h1>Invoice #{{invoice.invoice_id}}</h1>
+
+  <div class="container">
+      
+      <p>Pay with: {{invoice.coin_type}}</p>
+      <p id="p_address">Address: {{invoice.address}}</p>
+      <h2>Expires in: <span id="timer"></span></h2>
+      
+      <img src="{{ qr }}" alt="QR Code" class="qr_image">
+      <div class="warnings">
+        <ul>
+          <li>Warning example...</li>
+          <li>Do not reuse a one-time payment address</li>
+          <li>Processing the payment may take up to 30 minutes after it has been confirmed on the blockchain.</li>
+          <li>Use sufficient fees so the TX gets confirmed on time.</li>
+        </ul>
+      </div>
+        
+  </div>
+</body>
+ <script>
+    // Get expire date from backend
+    const expiresAt = new Date("{{ invoice.expires_at }}").getTime();
+
+    const timerEl = document.getElementById("timer");
+
+    const countdown = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = expiresAt - now;
+
+      if (distance <= 0) {
+        clearInterval(countdown);
+        timerEl.innerHTML = "EXPIRED";
+        return;
+      }
+
+      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((distance / (1000 * 60)) % 60);
+      const seconds = Math.floor((distance / 1000) % 60);
+
+      timerEl.innerHTML = 
+        String(hours).padStart(2, "0") + ":" +
+        String(minutes).padStart(2, "0") + ":" +
+        String(seconds).padStart(2, "0");
+
+    }, 1000);
+
+  </script>
+</html>
