@@ -6,6 +6,7 @@ from io import BytesIO
 from models_db import Invoices, CoinIndex, AvailableIndex
 import generate_address as ga
 from database import db
+from threading import Lock
 
 
 '''log = logging.getLogger('werkzeug')
@@ -19,14 +20,23 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
+    try:
 
-    with app.app_context():
-        db.create_all()
+        with app.app_context():
+            db.create_all()
+            if not CoinIndex.query.first():
+                coins = ["BTC", "LTC", "XMR"]
+                for coin in coins:
+                    db.session.add(CoinIndex(coin_type=coin, last_index=-1))
+                db.session.commit()
+
+    except Exception as e:
+        pass
 
     return app
 
 app = create_app()
-
+index_lock = Lock()
 
 SUPPORTED_COIN = ["BTC", "LTC", "XMR"]
 
@@ -35,19 +45,20 @@ def index():
     return render_template("index.html")
 
 def get_invoices_data(coin_type):
-    invoice_id = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
-    coin_index = CoinIndex.query.filter_by(coin_type=coin_type).first() # instance of coin_index
-    available = AvailableIndex.query.filter_by(coin_type=coin_type).first() # first available index (if exist)
+    with index_lock:
+        invoice_id = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(10))
+        coin_index = CoinIndex.query.filter_by(coin_type=coin_type).first() # instance of coin_index
+        available = AvailableIndex.query.filter_by(coin_type=coin_type).first() # first available index (if exist)
 
-    if available is not None:
-        index = available.index
-        row = db.session.get(AvailableIndex, available.id)
-        db.session.delete(row)
-        db.session.commit()
-    else:
-        index = coin_index.last_index + 1 # new index to use
-        coin_index.last_index = index     # Update coin_index in db
-        db.session.commit()
+        if available is not None:
+            index = available.index
+            row = db.session.get(AvailableIndex, available.id)
+            db.session.delete(row)
+            db.session.commit()
+        else:
+            index = coin_index.last_index + 1 # new index to use
+            coin_index.last_index = index     # Update coin_index in db
+            db.session.commit()
 
     
     if coin_type == "BTC":

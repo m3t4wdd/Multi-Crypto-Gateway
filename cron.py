@@ -18,35 +18,38 @@ def is_expired(timestamp_str: str) -> bool:
 
 
 def check_invoices():
+
     with app.app_context():
         all_invoices = Invoices.query.all()
         for invoice in all_invoices:
-            if invoice.status in ["pending", "detected"]:
-                match invoice.coin_type:
+            try:
+                if invoice.status in ["pending", "detected"]:
+                    match invoice.coin_type:
+                        case "BTC":
+                            amount = cp.CheckOther(invoice.coin_type, invoice.address)
+                            if amount > 0:
+                                invoice.status = "paid"
+                                invoice.amount = amount
+                                db.session.commit()
+                                cronlog(f"Bitcoin invoice {invoice.invoice_id} paid {amount}$")
 
-                    case "BTC":
-                        amount = cp.CheckOther(invoice.coin_type, invoice.address)
-                        if amount > 0:
-                            invoice.status = "paid"
-                            invoice.amount = amount
-                            db.session.commit()
-                            cronlog(f"Bitcoin invoice {invoice.invoice_id} paid {amount}$")
+                        case "XMR":
+                            amount = cp.MoneroBalance(invoice.index)
+                            if amount > 0:
+                                invoice.status = "paid"
+                                invoice.amount = amount
+                                db.session.commit()
+                                cronlog(f"Monero invoice: {invoice.invoice_id} paid {amount}")
 
-                    case "XMR":
-                        amount = cp.MoneroBalance(invoice.index)
-                        if amount > 0:
-                            invoice.status = "paid"
-                            invoice.amount = amount
-                            db.session.commit()
-                            cronlog(f"Monero invoice: {invoice.invoice_id} paid {amount}")
-
-                    case "LTC":
-                        amount = cp.CheckOther(invoice.coin_type, invoice.address)
-                        if amount > 0:
-                            invoice.status = "paid"
-                            invoice.amount = amount
-                            db.session.commit()
-                            cronlog(f"Litecoin invoice {invoice.invoice_id} paid {amount}$")
+                        case "LTC":
+                            amount = cp.CheckOther(invoice.coin_type, invoice.address)
+                            if amount > 0:
+                                invoice.status = "paid"
+                                invoice.amount = amount
+                                db.session.commit()
+                                cronlog(f"Litecoin invoice {invoice.invoice_id} paid {amount}$")
+            except Exception as e:
+                print(e)
 
             #check for transactions expired within the last 24 hours
             if invoice.status in ["pending"]:

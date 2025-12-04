@@ -47,6 +47,7 @@ def monero(seed_bytes):
     return address, priv_view, priv_spend
 
 if __name__ == "__main__":
+    
 
     if os.path.exists("./Wallets"):
         print('Directory "Wallets" alredy exist')
@@ -74,11 +75,7 @@ if __name__ == "__main__":
             
 
             standard_address, view_key, spend_key = monero(seed_bytes)
-            child = pexpect.spawn(
-
-            f'monero-wallet-cli --generate-from-view-key ./Wallets/Monero/monero_viewonly --offline --password "{pwd}" --restore-height 0 --command exit'
-
-            )
+            child = pexpect.spawn('monero-wallet-cli', ["--generate-from-view-key", "./Wallets/Monero/monero_viewonly", "--offline", "--password", pwd, "--restore-height", "0", "--command", "exit"])
 
             child.expect("Standard address:")
             child.sendline(standard_address)
