@@ -14,3 +14,11 @@ A simple and light representation of a multi crypto gateway written in Python.
 # Run
 1) python3 setup.py
 2) docker compose up --build
+
+# SCREENSHOTS
+<img width="1426" height="456" alt="image" src="https://github.com/user-attachments/assets/bbafca3e-c759-4da3-b30c-38cc7e0ba3d1" />
+
+<img width="1377" height="614" alt="image" src="https://github.com/user-attachments/assets/4f9b94fc-431e-4c13-bffd-11ed53c59887" />
+
+
+
